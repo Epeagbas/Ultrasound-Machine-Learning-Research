@@ -23,9 +23,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import random
 import cv2
+import os
 
-dataPath = '/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/test.csv'
-image_path='/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/combined/' 
+dataPath = os.getcwd()+'/test.csv'
+image_path=os.getcwd()+'/combined/' 
 
 def dataSegment(path):
     data = pd.read_csv(dataPath)
