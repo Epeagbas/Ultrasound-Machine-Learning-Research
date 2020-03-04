@@ -8,8 +8,8 @@ References:
     Keras Data generator: https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly
     Data Orginization: https://towardsdatascience.com/image-detection-from-scratch-in-keras-f314872006c9
 '''
-
 #import matplotlib.pyplot as plt
+
 from keras.models import load_model
 import numpy as np
 from keras import models
@@ -92,13 +92,22 @@ def convertArry():
     Test_y_mat=to_categorical(Test_y_num)
 
     print "the shape of the X_input array is: " + str(X_num.shape)
-    print "the shape of Y_output array is: " + str(Y_mat.shape)
+    #print "the shape of Y_output array is: " + str(Y_mat.shape)
     print "the shape of Val_x array is: " + str(Val_x_num.shape)
-    print "the shape of Val_y array is: " + str(Val_y_mat.shape)
+    #print "the shape of Val_y array is: " + str(Val_y_mat.shape)
     print "the shape of Test_x array is: "+ str(Test_x_num.shape)
-    print "the hsape of test_y array is: "+ str(Test_y_mat.shape)
-
-    return X_num, Y_mat, Val_x_num, Val_y_mat, Test_x_num, Test_y_mat
+    #print "the hsape of test_y array is: "+ str(Test_y_mat.shape)
+    print("------------------------------------------------------------------------") 
+    print("------------------------------------------------------------------------") 
+    print("------------------------------------------------------------------------") 
+    print("------------------------------------------------------------------------")      
+    
+    print "the shape of Y_num array is: " + str(Y_num.shape)
+    print "the shape of Val_y array is: " + str(Val_y_num.shape)
+    print "the shape of Test_y array is: " + str(Test_y_num.shape)
+    
+    #return X_num, Y_mat, Val_x_num, Val_y_mat, Test_x_num, Test_y_mat
+    return X_num, Y_num, Val_x_num, Val_y_num, Test_x_num, Test_y_num    
 
 def cnnModel():
     model=models.Sequential()
@@ -114,7 +123,8 @@ def cnnModel():
     model.add(layers.Flatten())
     model.add(layers.Dropout(0.5))
     model.add(layers.Dense(512, activation='relu'))
-    model.add(layers.Dense(31, activation='softmax'))
+    model.add(layers.Dense(1, activation='relu'))
+    #model.add(layers.Dense(31, activation='softmax'))
     return model
 
 def trainModel():
@@ -125,7 +135,7 @@ def trainModel():
     cnn = cnnModel()
     cnn.summary()
     #cnn.compile(loss = 'binary_crossentropy',optimizer=optimizers.RMSprop(lr=1e-4),metrics=['acc'])
-    cnn.compile(loss = 'categorical_crossentropy',optimizer=optimizers.RMSprop(lr=1e-4),metrics=['acc'])
+    cnn.compile(loss = 'mean_squared_error',optimizer=optimizers.SGD(lr=1e-4),metrics=['acc'])
 
     train_datagen = ImageDataGenerator(rescale=1./255, rotation_range=0, width_shift_range=0,height_shift_range=0, shear_range=0, 
                                        zoom_range=0, horizontal_flip=True)
@@ -134,14 +144,17 @@ def trainModel():
     train_generator = train_datagen.flow(x_train,y_train,batch_size=batch_size)
     val_generator=val_datagen.flow(val_x,val_y, batch_size=batch_size)
 
-    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=10, validation_data=val_generator,
+    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=100, validation_data=val_generator,
                             validation_steps=nval//batch_size, use_multiprocessing=True)
     #new version
     #history=cnn.fit(x_train,y_train,steps_per_epoch=ntrain/batch_size, epochs=64, validation_data=val_generator, validation_steps=nval/batch_size)
     model_score=cnn.evaluate(test_x,test_y)
     print model_score
-    cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_weights_1_bad.h5')
-    cnn.save('/home/sepeagb2/sam/code/saved_models/model_keras_1_bad.h5')
+    model_predict=cnn.predict(test_x)
+    print model_predict
+    print test_y
+    #cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_weights_1_bad.h5')
+    #cnn.save('/home/sepeagb2/sam/code/saved_models/model_keras_1_bad.h5')
 
 def main():
     trainModel()
