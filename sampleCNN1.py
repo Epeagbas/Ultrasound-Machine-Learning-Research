@@ -25,6 +25,7 @@ import random
 import cv2
 
 dataPath = '/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/test.csv'
+image_path='/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/combined/' 
 
 def dataSegment(path):
     data = pd.read_csv(dataPath)
@@ -52,7 +53,7 @@ def loadDataList():
 
 def prepareData():
     x,y,val_x,val_y,test_x,test_y,data = loadDataList()
-    image_path='/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/combined/' 
+    #image_path='/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/combined/' 
     X=[]
     Y=[]
     Val_x=[]
