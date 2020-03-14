@@ -41,6 +41,7 @@ import cv2
 from keras.applications.resnet50 import ResNet50
 from keras.models import Model
 
+
 dataPath = '/home/sepeagb2/sam/data/Ultrasound-Machine-Learning-Research/test.csv'
 
 
@@ -223,7 +224,7 @@ def trainModel():
     
     val_generator=val_datagen.flow(val_x,val_y, batch_size=batch_size)
 
-    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=10, validation_data=val_generator,
+    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=1000, validation_data=val_generator,
                             validation_steps=nval//batch_size, use_multiprocessing=True)
     #new version
     #history=cnn.fit(x_train,y_train,steps_per_epoch=ntrain/batch_size, epochs=64, validation_data=val_generator, validation_steps=nval/batch_size)
@@ -237,10 +238,15 @@ def trainModel():
     #prediction={'prediction':model_predict,'ground_truth':test_y}
     prediction_test=pd.DataFrame(model_predict,columns=['prediction'])
     prediction_test['ground_truth']=test_y
-    prediction_test.to_csv('prediction_100_tanh.csv')
+    prediction_test.to_csv('resNet50_1000epochs.csv')
+    
+    #test_result=pd.Dataframe.from_dict({'model_predict':model_predict,'ground_truth':test_y})
+    
+    #test_result.to_csv('test_result.csv')
 
-    #cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_weights_1_resnet50_100000epochs_tanh.h5')
-    #cnn.save('/home/sepeagb2/sam/code/saved_models/model_keras_1_resnet50_10000epochs_tanh.h5')
+
+    cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_weights_resnet50_1000epochs.h5')
+    cnn.save('/home/sepeagb2/sam/code/saved_models/model_resnet50_10000epochs.h5')
 
 def trainModelMulti(modelMulti):
     x_train,y_train,val_x,val_y,test_x,test_y = convertArry()
@@ -261,19 +267,24 @@ def trainModelMulti(modelMulti):
     train_generator = train_datagen.flow(x_train,y_train,batch_size=batch_size)
     val_generator=val_datagen.flow(val_x,val_y, batch_size=batch_size)
 
-    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=10000, validation_data=val_generator,
+    history=cnn.fit_generator(train_generator, steps_per_epoch=ntrain//batch_size, epochs=1000, validation_data=val_generator,
                             validation_steps=nval//batch_size, use_multiprocessing=True)
     #new version
     #history=cnn.fit(x_train,y_train,steps_per_epoch=ntrain/batch_size, epochs=64, validation_data=val_generator, validation_steps=nval/batch_size)
     model_score=cnn.evaluate(test_x,test_y)
-    print model_score
+    #print model_score
     model_predict=cnn.predict(test_x)
-    print model_predict
-    print len(model_predict)
-    print test_y
-    print len(test_y)
-    cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_weights_1_fixed.h5')
-    cnn.save('/home/sepeagb2/sam/code/saved_models/model_keras_1_fixed.h5')
+    #print model_predict
+    #print len(model_predict)
+    #print test_y
+    #print len(test_y)
+    
+    #test_result=pd.Dataframe({'model_predict':model_predict,'ground_truth':test_y})
+    
+    #test_result.to_csv('test_result.csv')
+
+    cnn.save_weights('/home/sepeagb2/sam/code/saved_weights/model_wieghts_resNet50.h5')
+    cnn.save('/home/sepeagb2/sam/code/saved_models/model_resNet50_1000.h5')
 
 def main():
     #ap=argeparse.ArgumentParser()
